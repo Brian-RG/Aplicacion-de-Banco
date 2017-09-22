@@ -10,28 +10,47 @@ namespace Aplicación_Cajero
     {
         static void Main(string[] args)
         {
-            string contraseña, password = "123", password1, password2, respuesta1, respuesta2, respuestadep, respuesta3, respuesta4, respuesta5, respuesta6;
+            string contraseña="", password = "123", password1, password2;
             string consulta;
-            char respuesta;
-            int retiros1 = 0, retiros = 0, monto, saldo = 9150, total_pago1 = 0, total_pago2 = 0, total_pago3 = 0, total_pago4 = 0;
-            int cont_retiro = 0, deposito, deposito1 = 0, servicio, cantidad_p = 0, cantidad_p2= 0, cantidad_p3 = 0, cantidad_p4 = 0;
-            int cont_deposito = 0, cont_pagos = 0;
-            int total_pagos = 0, subtotal_pagos = 0;
-            int j = 0;
+            int retiros1 = 0, retiros = 0, monto, saldo = 9150;
+            int cont_retiro = 0, deposito, deposito1 = 0;
+            int cont_deposito = 0, cont_pagos = 0, intentos = 0;
             string usuario;
             string user = "admin";
-            char letra;
-            do                                                 //Inicio de for
+            char respuesta = ' ';
+            bool continuar;
+            ConsoleKeyInfo letra;     
+                           
+                Console.Clear();
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.WriteLine("::::::::::::::::::Bienvenido al cajero Bankrex::::::::::::::::");
+                Console.WriteLine();
+                Console.WriteLine();
+            do
             {
                 Console.Clear();
                 Console.ForegroundColor = ConsoleColor.White;
+                contraseña = "";
                 Console.WriteLine("::::::::::::::::::Bienvenido al cajero Bankrex::::::::::::::::");
                 Console.WriteLine();
                 Console.WriteLine();
                 Console.WriteLine("Ingresa el usuario: ");
                 usuario = Console.ReadLine();
                 Console.Write("Ingresa tu contraseña: ");
-                contraseña = Console.ReadLine();
+                continuar = true;
+                while (continuar)
+                {
+                    letra = Console.ReadKey(true);
+                    if (letra.KeyChar != '\r')
+                    {
+                        contraseña+= letra.KeyChar;
+                        Console.Write("*");
+                    }
+                    else
+                        continuar = false;
+                }
+                Console.Write('\n');
+                Console.WriteLine(contraseña);
                 if (contraseña == password && usuario == user)
                 {
                     do
@@ -66,6 +85,7 @@ namespace Aplicación_Cajero
                                 if (retiros1 == 7000)
                                 {
                                     Console.WriteLine("Haz alcanzado el monto máximo de retiros por hoy.");
+                                    Console.ReadKey(false);
                                     break;
                                 }
                                 Console.WriteLine("****************** La cantidad máxima de retiro son $7000 ***********************");
@@ -75,7 +95,7 @@ namespace Aplicación_Cajero
                                 Console.WriteLine("Ingresa el monto a retirar");
                                 monto = Convert.ToInt32(Console.ReadLine());
                                 retiros1 += monto;
-                                if (monto > 0)
+                                if (monto >= 0)
                                 {
                                     if (retiros1 <= 7000)
                                     {
@@ -84,12 +104,16 @@ namespace Aplicación_Cajero
                                         Console.WriteLine("Tu saldo actual es de {0}", saldo);
                                         retiros = retiros1;
                                         ++cont_retiro;
+                                        Console.ReadKey(false);
                                         break;
                                     }
                                     else if (retiros1 > 7000)
                                         Console.WriteLine("Error al realizar la operación: Monto excedido.");
                                 }
+                                else
+                                    Console.WriteLine("Error. Cantidad incorrecta.");
                                 retiros1 = retiros;
+                                Console.ReadKey(false);
                                 break;
                             case 'b':
 
@@ -99,6 +123,7 @@ namespace Aplicación_Cajero
                                 if (deposito1 == 12000)
                                 {
                                     Console.WriteLine("Haz alcanzado el máximo de depósito por hoy.");
+                                    Console.ReadKey(false);
                                     break;
                                 }
                                 Console.WriteLine("****************** La cantidad máxima de deposito es $12000 ***********************");
@@ -117,6 +142,7 @@ namespace Aplicación_Cajero
                                         Console.WriteLine("Tu saldo actual es de {0}", saldo);
                                         deposito = deposito1;
                                         ++cont_deposito;
+                                        Console.ReadKey(false);
                                         break;
                                     }//if de depositos
                                     else
@@ -129,6 +155,7 @@ namespace Aplicación_Cajero
                                     Console.WriteLine("Error: Monto mal ingresado");
                                 }//validacion de depositos
                                 deposito1 = deposito;
+                                Console.ReadKey(false);
                                 break;
                             case 'c':
                                 Console.ForegroundColor = ConsoleColor.Gray;
@@ -174,7 +201,6 @@ namespace Aplicación_Cajero
                                 Console.ForegroundColor = ConsoleColor.Yellow;
                                 Console.WriteLine("4) Gas");
                                 Console.ForegroundColor = ConsoleColor.Gray;
-                                servicio = Convert.ToInt32(Console.ReadLine());
                                 break;
                             case 'e':
                                 do
@@ -208,26 +234,34 @@ namespace Aplicación_Cajero
                                 Console.ForegroundColor = ConsoleColor.Gray;
                                 Console.Clear();
                                 Console.WriteLine("*****************Gracias por usar Bankrex****************");
-                                Console.ReadKey();
+                                Console.ReadKey(true);
                                 break;
                             default:
                                 Console.WriteLine("Error, opción incorrecta.");
                                 break;
                         }
-                        if (respuesta == 'c')
+                        if (respuesta == 'e')
                             break;
                     }
                     while (respuesta != 'f');
                 }
                 else
                 {
-                    Console.WriteLine("Error, contraseña incorrecta.");
-                    Console.ReadKey();
+                    Console.WriteLine("Error, usuario y/o contraseña incorrectos.");
+                    ++intentos;
+                    Console.ReadKey(false);
                 }
-                Console.ReadKey();
+                if (intentos > 3)
+                {
+                    Console.WriteLine("Numero de intentos excedidos");
+                    Console.ReadKey(false);
+                    break;
+                }
+                if (respuesta == 'f')
+                    break;
             }
-            while (true);
-            Console.ReadKey();
+            while (respuesta=='e' || intentos <=3);
+            Console.ReadKey(true);
         }
     }
 }
